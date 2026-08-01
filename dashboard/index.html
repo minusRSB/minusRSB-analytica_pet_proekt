@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Olist Marketplace Pulse</title>
+  <script src="./dashboard_data.js"></script>
+  <style>
+    :root {
+      --bg: #f5f6f2;
+      --panel: #ffffff;
+      --ink: #172033;
+      --muted: #667085;
+      --line: #d9ded6;
+      --teal: #0f766e;
+      --blue: #2563eb;
+      --amber: #d97706;
+      --rose: #be123c;
+      --green: #15803d;
+      --shadow: 0 12px 28px rgba(23, 32, 51, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      letter-spacing: 0;
+    }
+
+    header {
+      padding: 22px 28px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 38px);
+      line-height: 1.05;
+      font-weight: 760;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(132px, 1fr));
+      gap: 10px;
+      min-width: min(680px, 100%);
+      align-items: end;
+    }
+
+    label {
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    select {
+      width: 100%;
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--ink);
+      padding: 0 10px;
+      font: inherit;
+      font-size: 13px;
+    }
+
+    main {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 18px 28px 34px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+      min-height: 96px;
+    }
+
+    .metric .label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .metric .value {
+      margin-top: 10px;
+      font-size: clamp(20px, 2.4vw, 30px);
+      line-height: 1.05;
+      font-weight: 780;
+      overflow-wrap: anywhere;
+    }
+
+    .metric .note {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      min-height: 360px;
+      padding: 16px;
+    }
+
+    .panel.compact {
+      min-height: 310px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      line-height: 1.2;
+      font-weight: 760;
+    }
+
+    .chart {
+      width: 100%;
+      height: 292px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: minmax(92px, 190px) 1fr minmax(74px, auto);
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0;
+      font-size: 13px;
+    }
+
+    .bar-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--ink);
+    }
+
+    .bar-track {
+      height: 11px;
+      border-radius: 8px;
+      background: #edf0ea;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 8px;
+      min-width: 2px;
+    }
+
+    .bar-value {
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      padding: 9px 8px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    td.num,
+    th.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .donut-wrap {
+      display: grid;
+      grid-template-columns: 158px 1fr;
+      align-items: center;
+      gap: 18px;
+      min-height: 240px;
+    }
+
+    .donut {
+      width: 154px;
+      height: 154px;
+      border-radius: 50%;
+      position: relative;
+      background: conic-gradient(var(--teal) 0deg, var(--teal) 360deg);
+    }
+
+    .donut::after {
+      content: "";
+      position: absolute;
+      inset: 34px;
+      border-radius: 50%;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+
+    .legend-row {
+      display: grid;
+      grid-template-columns: 12px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      margin: 9px 0;
+      font-size: 13px;
+    }
+
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    .heatmap {
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .heatmap-grid {
+      display: grid;
+      gap: 4px;
+      min-width: 720px;
+      align-items: center;
+    }
+
+    .heat-cell,
+    .heat-head,
+    .heat-label {
+      min-height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .heat-head,
+    .heat-label {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .heat-cell {
+      color: #ffffff;
+      background: var(--teal);
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 24px 0;
+    }
+
+    @media (max-width: 1180px) {
+      .topline {
+        display: grid;
+      }
+
+      .metrics {
+        grid-template-columns: repeat(3, minmax(150px, 1fr));
+      }
+
+      .grid,
+      .grid.three {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      header,
+      main {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .filters,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        padding: 12px;
+      }
+
+      .donut-wrap {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+
+      .bar-row {
+        grid-template-columns: 108px 1fr;
+      }
+
+      .bar-value {
+        grid-column: 2;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topline">
+      <div>
+        <h1>Olist Marketplace Pulse</h1>
+        <p class="subtitle" id="periodLabel">Живой срез по продажам, клиентам, доставке, отзывам и оплатам</p>
+      </div>
+      <div class="filters">
+        <label>
+          Месяц с
+          <select id="monthFrom"></select>
+        </label>
+        <label>
+          Месяц по
+          <select id="monthTo"></select>
+        </label>
+        <label>
+          Штат клиента
+          <select id="stateFilter"></select>
+        </label>
+        <label>
+          Категория
+          <select id="categoryFilter"></select>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="metrics" id="metrics"></section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Динамика выручки и заказов</h2>
+        <svg class="chart" id="monthlyChart" role="img" aria-label="Динамика выручки и заказов"></svg>
+      </div>
+      <div class="panel">
+        <h2>Категории по выручке</h2>
+        <div id="categoryBars"></div>
+      </div>
+    </section>
+
+    <section class="grid three">
+      <div class="panel compact">
+        <h2>Штаты по выручке</h2>
+        <div id="stateBars"></div>
+      </div>
+      <div class="panel compact">
+        <h2>Способы оплаты</h2>
+        <div class="donut-wrap">
+          <div class="donut" id="paymentDonut"></div>
+          <div id="paymentLegend"></div>
+        </div>
+      </div>
+      <div class="panel compact">
+        <h2>Доставка и оценка</h2>
+        <div id="deliveryBars"></div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Когорты клиентов</h2>
+        <div class="heatmap" id="cohortHeatmap"></div>
+      </div>
+      <div class="panel">
+        <h2>Топ продавцов</h2>
+        <div id="sellerTable"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const raw = window.OLIST_DASHBOARD_DATA;
+    const colors = ["#0f766e", "#2563eb", "#d97706", "#be123c", "#15803d", "#7c3aed", "#9333ea", "#0891b2"];
+
+    const fmtCurrency = new Intl.NumberFormat("ru-RU", {
+      style: "currency",
+      currency: "BRL",
+      maximumFractionDigits: 0
+    });
+    const fmtNumber = new Intl.NumberFormat("ru-RU");
+    const fmtDecimal = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 });
+    const fmtPct = new Intl.NumberFormat("ru-RU", { style: "percent", maximumFractionDigits: 1 });
+
+    const orderById = new Map(raw.orders.map(order => [order[0], order]));
+    const firstMonthByCustomer = new Map();
+
+    for (const order of raw.orders) {
+      const customer = order[3];
+      const month = order[1];
+      if (!firstMonthByCustomer.has(customer) || month < firstMonthByCustomer.get(customer)) {
+        firstMonthByCustomer.set(customer, month);
+      }
+    }
+
+    function option(select, value, label) {
+      const item = document.createElement("option");
+      item.value = value;
+      item.textContent = label;
+      select.appendChild(item);
+    }
+
+    function setupFilters() {
+      const monthFrom = document.getElementById("monthFrom");
+      const monthTo = document.getElementById("monthTo");
+      const stateFilter = document.getElementById("stateFilter");
+      const categoryFilter = document.getElementById("categoryFilter");
+
+      raw.months.forEach((month, index) => {
+        option(monthFrom, String(index), month);
+        option(monthTo, String(index), month);
+      });
+      monthFrom.value = "0";
+      monthTo.value = String(raw.months.length - 1);
+
+      option(stateFilter, "all", "Все штаты");
+      raw.states.forEach((state, index) => option(stateFilter, String(index), state));
+
+      option(categoryFilter, "all", "Все категории");
+      raw.categories.forEach((category, index) => option(categoryFilter, String(index), category));
+
+      [monthFrom, monthTo, stateFilter, categoryFilter].forEach(select => {
+        select.addEventListener("change", render);
+      });
+
+      document.getElementById("periodLabel").textContent =
+        `Период данных: ${raw.meta.periodStart} - ${raw.meta.periodEnd}`;
+    }
+
+    function currentFilters() {
+      let from = Number(document.getElementById("monthFrom").value);
+      let to = Number(document.getElementById("monthTo").value);
+      if (from > to) {
+        [from, to] = [to, from];
+      }
+      return {
+        monthFrom: from,
+        monthTo: to,
+        state: document.getElementById("stateFilter").value,
+        category: document.getElementById("categoryFilter").value
+      };
+    }
+
+    function orderPasses(order, filters) {
+      const month = order[1];
+      if (month < filters.monthFrom || month > filters.monthTo) return false;
+      if (filters.state !== "all" && String(order[2]) !== filters.state) return false;
+      return true;
+    }
+
+    function filteredOrders(filters) {
+      if (filters.category === "all") {
+        return raw.orders.filter(order => orderPasses(order, filters));
+      }
+
+      const orderIds = new Set();
+      for (const item of raw.items) {
+        if (String(item[1]) !== filters.category) continue;
+        const order = orderById.get(item[0]);
+        if (order && orderPasses(order, filters)) {
+          orderIds.add(item[0]);
+        }
+      }
+      return [...orderIds].map(orderId => orderById.get(orderId));
+    }
+
+    function filteredItems(filters, ignoreCategory = false, ignoreState = false) {
+      const rows = [];
+      for (const item of raw.items) {
+        if (!ignoreCategory && filters.category !== "all" && String(item[1]) !== filters.category) continue;
+        const order = orderById.get(item[0]);
+        if (!order) continue;
+        const adjustedFilters = ignoreState ? { ...filters, state: "all" } : filters;
+        if (orderPasses(order, adjustedFilters)) {
+          rows.push(item);
+        }
+      }
+      return rows;
+    }
+
+    function summarize(filters) {
+      const orders = filteredOrders(filters);
+      const orderIds = new Set(orders.map(order => order[0]));
+      const customerCounts = new Map();
+
+      let revenue = 0;
+      let freight = 0;
+
+      if (filters.category === "all") {
+        for (const order of orders) {
+          revenue += order[4] || 0;
+          freight += order[5] || 0;
+        }
+      } else {
+        for (const item of filteredItems(filters)) {
+          revenue += item[3] || 0;
+          freight += item[4] || 0;
+        }
+      }
+
+      let deliverySum = 0;
+      let deliveryCount = 0;
+      let delayedCount = 0;
+      let delayedKnown = 0;
+      let reviewSum = 0;
+      let reviewCount = 0;
+      let negativeReviews = 0;
+      let itemCount = 0;
+
+      for (const order of orders) {
+        customerCounts.set(order[3], (customerCounts.get(order[3]) || 0) + 1);
+        if (order[7] !== null) {
+          deliverySum += order[7];
+          deliveryCount += 1;
+        }
+        if (order[8] !== null) {
+          delayedKnown += 1;
+          delayedCount += order[8] === 1 ? 1 : 0;
+        }
+        if (order[9] !== null) {
+          reviewSum += order[9];
+          reviewCount += 1;
+          negativeReviews += order[9] <= 2 ? 1 : 0;
+        }
+        itemCount += order[6] || 0;
+      }
+
+      const repeatCustomers = [...customerCounts.values()].filter(count => count > 1).length;
+
+      return {
+        orders: orderIds.size,
+        revenue,
+        freight,
+        aov: revenue / Math.max(orderIds.size, 1),
+        customers: customerCounts.size,
+        retention: repeatCustomers / Math.max(customerCounts.size, 1),
+        avgDelivery: deliverySum / Math.max(deliveryCount, 1),
+        delayedRate: delayedCount / Math.max(delayedKnown, 1),
+        avgReview: reviewSum / Math.max(reviewCount, 1),
+        negativeRate: negativeReviews / Math.max(reviewCount, 1),
+        basketSize: itemCount / Math.max(orderIds.size, 1)
+      };
+    }
+
+    function renderMetrics(summary) {
+      const metrics = [
+        ["Выручка", fmtCurrency.format(summary.revenue), "товарная выручка"],
+        ["Заказы", fmtNumber.format(summary.orders), "коммерческие заказы"],
+        ["Средний чек", fmtCurrency.format(summary.aov), "выручка / заказы"],
+        ["Retention", fmtPct.format(summary.retention), "клиенты с 2+ заказами"],
+        ["Доставка", `${fmtDecimal.format(summary.avgDelivery)} дн.`, "среднее время"],
+        ["Оценка", fmtDecimal.format(summary.avgReview), `негатив: ${fmtPct.format(summary.negativeRate)}`]
+      ];
+
+      document.getElementById("metrics").innerHTML = metrics.map(metric => `
+        <article class="metric">
+          <div class="label">${metric[0]}</div>
+          <div class="value">${metric[1]}</div>
+          <div class="note">${metric[2]}</div>
+        </article>
+      `).join("");
+    }
+
+    function monthlySeries(filters) {
+      const rows = raw.months.map(month => ({ month, revenue: 0, orders: new Set() }));
+
+      if (filters.category === "all") {
+        for (const order of raw.orders) {
+          if (!orderPasses(order, filters)) continue;
+          rows[order[1]].revenue += order[4] || 0;
+          rows[order[1]].orders.add(order[0]);
+        }
+      } else {
+        for (const item of filteredItems(filters)) {
+          const order = orderById.get(item[0]);
+          rows[order[1]].revenue += item[3] || 0;
+          rows[order[1]].orders.add(item[0]);
+        }
+      }
+
+      return rows
+        .slice(filters.monthFrom, filters.monthTo + 1)
+        .map(row => ({ month: row.month, revenue: row.revenue, orders: row.orders.size }));
+    }
+
+    function renderMonthlyChart(rows) {
+      const svg = document.getElementById("monthlyChart");
+      const width = svg.clientWidth || 820;
+      const height = svg.clientHeight || 292;
+      const pad = { top: 18, right: 20, bottom: 42, left: 64 };
+      const innerWidth = width - pad.left - pad.right;
+      const innerHeight = height - pad.top - pad.bottom;
+      const maxRevenue = Math.max(...rows.map(row => row.revenue), 1);
+      const maxOrders = Math.max(...rows.map(row => row.orders), 1);
+
+      const x = index => pad.left + (rows.length === 1 ? innerWidth / 2 : index * innerWidth / (rows.length - 1));
+      const yRevenue = value => pad.top + innerHeight - value / maxRevenue * innerHeight;
+      const yOrders = value => pad.top + innerHeight - value / maxOrders * innerHeight;
+      const revenuePath = rows.map((row, index) => `${x(index)},${yRevenue(row.revenue)}`).join(" ");
+      const ordersPath = rows.map((row, index) => `${x(index)},${yOrders(row.orders)}`).join(" ");
+      const ticks = rows.filter((_, index) => index % Math.ceil(rows.length / 6) === 0);
+
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      svg.innerHTML = `
+        <line x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${height - pad.bottom}" stroke="#d9ded6"/>
+        <line x1="${pad.left}" y1="${height - pad.bottom}" x2="${width - pad.right}" y2="${height - pad.bottom}" stroke="#d9ded6"/>
+        <polyline points="${revenuePath}" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="${ordersPath}" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.78"/>
+        ${rows.map((row, index) => `<circle cx="${x(index)}" cy="${yRevenue(row.revenue)}" r="3" fill="#0f766e"/>`).join("")}
+        ${ticks.map(row => {
+          const index = rows.indexOf(row);
+          return `<text x="${x(index)}" y="${height - 14}" text-anchor="middle" font-size="11" fill="#667085">${row.month}</text>`;
+        }).join("")}
+        <text x="${pad.left}" y="13" font-size="12" fill="#0f766e">Выручка</text>
+        <text x="${pad.left + 86}" y="13" font-size="12" fill="#2563eb">Заказы</text>
+        <text x="${pad.left - 8}" y="${pad.top + 4}" text-anchor="end" font-size="11" fill="#667085">${fmtCurrency.format(maxRevenue)}</text>
+        <text x="${pad.left - 8}" y="${height - pad.bottom}" text-anchor="end" font-size="11" fill="#667085">0</text>
+      `;
+    }
+
+    function renderBars(targetId, rows, color, formatter) {
+      const target = document.getElementById(targetId);
+      if (!rows.length) {
+        target.innerHTML = `<div class="empty">Нет данных для выбранных фильтров</div>`;
+        return;
+      }
+
+      const max = Math.max(...rows.map(row => row.value), 1);
+      target.innerHTML = rows.map(row => `
+        <div class="bar-row" title="${row.label}">
+          <div class="bar-label">${row.label}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.max(row.value / max * 100, 1)}%; background:${color};"></div></div>
+          <div class="bar-value">${formatter(row.value)}</div>
+        </div>
+      `).join("");
+    }
+
+    function categoryRows(filters) {
+      const values = new Map();
+      for (const item of filteredItems(filters, false)) {
+        const category = raw.categories[item[1]];
+        values.set(category, (values.get(category) || 0) + (item[3] || 0));
+      }
+      return [...values.entries()]
+        .map(([label, value]) => ({ label, value }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 12);
+    }
+
+    function stateRows(filters) {
+      const values = new Map();
+      if (filters.category === "all") {
+        for (const order of raw.orders) {
+          const adjusted = { ...filters, state: "all" };
+          if (!orderPasses(order, adjusted)) continue;
+          const state = raw.states[order[2]];
+          values.set(state, (values.get(state) || 0) + (order[4] || 0));
+        }
+      } else {
+        for (const item of filteredItems(filters, false, true)) {
+          const order = orderById.get(item[0]);
+          const state = raw.states[order[2]];
+          values.set(state, (values.get(state) || 0) + (item[3] || 0));
+        }
+      }
+      return [...values.entries()]
+        .map(([label, value]) => ({ label, value }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 10);
+    }
+
+    function paymentRows(orderSet) {
+      const values = new Map();
+      for (const payment of raw.payments) {
+        if (!orderSet.has(payment[0])) continue;
+        values.set(payment[2], (values.get(payment[2]) || 0) + (payment[4] || 0));
+      }
+      return [...values.entries()]
+        .map(([label, value], index) => ({ label, value, color: colors[index % colors.length] }))
+        .sort((a, b) => b.value - a.value);
+    }
+
+    function renderDonut(rows) {
+      const total = rows.reduce((sum, row) => sum + row.value, 0);
+      let current = 0;
+      const slices = rows.map(row => {
+        const start = current;
+        const end = current + row.value / Math.max(total, 1) * 360;
+        current = end;
+        return `${row.color} ${start}deg ${end}deg`;
+      }).join(", ");
+
+      document.getElementById("paymentDonut").style.background = `conic-gradient(${slices || "#d9ded6 0deg 360deg"})`;
+      document.getElementById("paymentLegend").innerHTML = rows.map(row => `
+        <div class="legend-row">
+          <span class="swatch" style="background:${row.color}"></span>
+          <span>${row.label}</span>
+          <strong>${fmtPct.format(row.value / Math.max(total, 1))}</strong>
+        </div>
+      `).join("") || `<div class="empty">Нет данных</div>`;
+    }
+
+    function deliveryRows(orders) {
+      const buckets = [
+        ["00-03 дня", 0, 3],
+        ["04-07 дней", 3, 7],
+        ["08-14 дней", 7, 14],
+        ["15-30 дней", 14, 30],
+        ["31+ дней", 30, Infinity]
+      ];
+
+      return buckets.map(bucket => {
+        const rows = orders.filter(order => {
+          if (order[7] === null || order[9] === null) return false;
+          if (bucket[0] === "00-03 дня") return order[7] <= bucket[2];
+          return order[7] > bucket[1] && order[7] <= bucket[2];
+        });
+        const avgReview = rows.reduce((sum, order) => sum + order[9], 0) / Math.max(rows.length, 1);
+        return { label: bucket[0], value: avgReview, count: rows.length };
+      }).filter(row => row.count > 0);
+    }
+
+    function renderDelivery(rows) {
+      const target = document.getElementById("deliveryBars");
+      if (!rows.length) {
+        target.innerHTML = `<div class="empty">Нет данных для выбранных фильтров</div>`;
+        return;
+      }
+
+      target.innerHTML = rows.map(row => `
+        <div class="bar-row">
+          <div class="bar-label">${row.label}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${row.value / 5 * 100}%; background:#d97706;"></div></div>
+          <div class="bar-value">${fmtDecimal.format(row.value)} / ${fmtNumber.format(row.count)}</div>
+        </div>
+      `).join("");
+    }
+
+    function sellerRows(items) {
+      const values = new Map();
+      const orders = new Map();
+      for (const item of items) {
+        const seller = item[2];
+        values.set(seller, (values.get(seller) || 0) + (item[3] || 0));
+        if (!orders.has(seller)) orders.set(seller, new Set());
+        orders.get(seller).add(item[0]);
+      }
+      return [...values.entries()]
+        .map(([sellerIndex, revenue]) => ({
+          seller: raw.sellers[sellerIndex],
+          revenue,
+          orders: orders.get(sellerIndex).size
+        }))
+        .sort((a, b) => b.revenue - a.revenue)
+        .slice(0, 12);
+    }
+
+    function renderSellerTable(rows) {
+      const target = document.getElementById("sellerTable");
+      if (!rows.length) {
+        target.innerHTML = `<div class="empty">Нет данных для выбранных фильтров</div>`;
+        return;
+      }
+
+      target.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Продавец</th>
+              <th>Штат</th>
+              <th class="num">Заказы</th>
+              <th class="num">Выручка</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(row => `
+              <tr>
+                <td title="${row.seller.id}">${row.seller.id.slice(0, 10)}...</td>
+                <td>${row.seller.state}</td>
+                <td class="num">${fmtNumber.format(row.orders)}</td>
+                <td class="num">${fmtCurrency.format(row.revenue)}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderCohorts(orders) {
+      const activity = new Map();
+      const cohortSize = new Map();
+
+      for (const order of orders) {
+        const customer = order[3];
+        const cohort = firstMonthByCustomer.get(customer);
+        const diff = order[1] - cohort;
+        if (diff < 0 || diff > 8) continue;
+        const key = `${cohort}:${diff}`;
+        activity.set(key, (activity.get(key) || new Set()).add(customer));
+      }
+
+      for (const customer of new Set(orders.map(order => order[3]))) {
+        const cohort = firstMonthByCustomer.get(customer);
+        cohortSize.set(cohort, (cohortSize.get(cohort) || 0) + 1);
+      }
+
+      const cohorts = [...cohortSize.keys()].sort((a, b) => a - b).slice(0, 14);
+      const columns = 10;
+      const grid = document.createElement("div");
+      grid.className = "heatmap-grid";
+      grid.style.gridTemplateColumns = `96px repeat(${columns - 1}, 1fr)`;
+      grid.innerHTML = `<div class="heat-head">Когорта</div>` +
+        Array.from({ length: columns - 1 }, (_, index) => `<div class="heat-head">M${index}</div>`).join("");
+
+      for (const cohort of cohorts) {
+        grid.insertAdjacentHTML("beforeend", `<div class="heat-label">${raw.months[cohort]}</div>`);
+        for (let diff = 0; diff < columns - 1; diff += 1) {
+          const active = activity.get(`${cohort}:${diff}`)?.size || 0;
+          const rate = active / Math.max(cohortSize.get(cohort) || 0, 1);
+          const opacity = Math.max(0.12, rate);
+          grid.insertAdjacentHTML("beforeend", `
+            <div class="heat-cell" title="${raw.months[cohort]} M${diff}: ${fmtPct.format(rate)}" style="background:rgba(15,118,110,${opacity})">
+              ${rate > 0 ? fmtPct.format(rate) : ""}
+            </div>
+          `);
+        }
+      }
+
+      const target = document.getElementById("cohortHeatmap");
+      target.innerHTML = "";
+      if (!cohorts.length) {
+        target.innerHTML = `<div class="empty">Нет данных для выбранных фильтров</div>`;
+        return;
+      }
+      target.appendChild(grid);
+    }
+
+    function render() {
+      const filters = currentFilters();
+      const orders = filteredOrders(filters);
+      const items = filteredItems(filters);
+      const orderSet = new Set(orders.map(order => order[0]));
+      const summary = summarize(filters);
+
+      renderMetrics(summary);
+      renderMonthlyChart(monthlySeries(filters));
+      renderBars("categoryBars", categoryRows(filters), "#0f766e", fmtCurrency.format.bind(fmtCurrency));
+      renderBars("stateBars", stateRows(filters), "#2563eb", fmtCurrency.format.bind(fmtCurrency));
+      renderDonut(paymentRows(orderSet));
+      renderDelivery(deliveryRows(orders));
+      renderSellerTable(sellerRows(items));
+      renderCohorts(orders);
+    }
+
+    if (!raw) {
+      document.body.innerHTML = "<main><div class='panel'><h1>Не найден dashboard_data.js</h1></div></main>";
+    } else {
+      setupFilters();
+      render();
+      window.addEventListener("resize", () => renderMonthlyChart(monthlySeries(currentFilters())));
+    }
+  </script>
+</body>
+</html>
