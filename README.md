@@ -58,7 +58,7 @@ project/
 
 Период данных: `2016-09-04` — `2018-10-17`.
 
-## Как Запустить PostgreSQL
+## Как запустить PostgreSQL
 
 Если PostgreSQL уже установлен локально:
 
@@ -78,7 +78,7 @@ psql -h localhost -U olist_user -d olist_analytics -f queries.sql
 
 Пароль из `docker-compose.yml`: `olist_password`.
 
-Важно: команды нужно запускать из корня проекта, чтобы `schema.sql` нашел файлы в папке `data/`.
+Команды нужно запускать из корня проекта, чтобы `schema.sql` нашел файлы в папке `data/`.
 
 ## SQL-Файлы
 
@@ -97,7 +97,7 @@ psql -h localhost -U olist_user -d olist_analytics -f queries.sql
 - отвечает на бизнес-вопросы по продажам, клиентам, товарам, доставке, отзывам и платежам;
 - показывает CTE, recursive CTE, window functions, `CASE`, `FILTER`, `RANK`, `DENSE_RANK`, `LAG`, `LEAD`.
 
-## Модель Данных
+## Модель данных
 
 Основные связи:
 
@@ -113,7 +113,7 @@ psql -h localhost -U olist_user -d olist_analytics -f queries.sql
 
 ![Модель данных](screenshots/data_model.png)
 
-## Основные Метрики
+## Основные метрики
 
 По текущему датасету:
 
@@ -129,7 +129,7 @@ psql -h localhost -U olist_user -d olist_analytics -f queries.sql
 - доля негативных отзывов: `14.69%`;
 - главный способ оплаты по сумме платежей: `credit_card`.
 
-## HTML-Дашборд
+## HTML-дашборд
 
 Дашборд лежит в папке `dashboard/`. Он работает как локальная HTML-страница и не требует дополнительных файлов для просмотра.
 
@@ -162,7 +162,7 @@ http://127.0.0.1:8765
 - когорты клиентов;
 - топ продавцов.
 
-## Технологии
+## Стек технологий:
 
 - PostgreSQL
 - SQL
